@@ -67,14 +67,15 @@ class ScratchcardView: UIView {
         if scratchedPoints.contains(point) {
             return
         }
-
+        
         scratchedPoints.insert(point)
         let revealedArea = calculateRevealedArea()
         let revealedPercentage = min(revealedArea / totalArea, 1.0)
 
         if revealedPercentage >= 0.8 {
             let randomIndex = weightedRandomIndex(with: probabilities)
-            let image = images[randomIndex]
+            let imageIndex = prizes[randomIndex] == 0 ? images.count - 1 : randomIndex
+            let image = images[imageIndex]
             let prize = prizes[randomIndex]
 
             // Remove all existing subviews
@@ -88,7 +89,14 @@ class ScratchcardView: UIView {
             awardMetaBytes(amount: prize)
 
             // Show alert with winning amount
-            let alertController = UIAlertController(title: "Congratulations!", message: "You have won \(prize) MetaBytes.", preferredStyle: .alert)
+            let alertMessage: String
+            if prize == 0 {
+                alertMessage = "Better luck next time!"
+            } else {
+                alertMessage = "You have won \(prize) MetaBytes."
+            }
+            
+            let alertController = UIAlertController(title: "Congratulations!", message: alertMessage, preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             if let rootViewController = UIApplication.shared.windows.first?.rootViewController {
                 rootViewController.present(alertController, animated: true, completion: nil)
@@ -98,6 +106,8 @@ class ScratchcardView: UIView {
         // Print the revealed percentage
         print("Revealed Percentage: \(revealedPercentage * 100)%")
     }
+
+
 
     
     private func calculateScratchedArea(in rect: CGRect) -> CGFloat {
