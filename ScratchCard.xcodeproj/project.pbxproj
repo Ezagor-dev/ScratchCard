@@ -15,6 +15,7 @@
 		E6E89BBB2A637163000A926E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E6E89BBA2A637163000A926E /* Assets.xcassets */; };
 		E6E89BBE2A637163000A926E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E6E89BBC2A637163000A926E /* LaunchScreen.storyboard */; };
 		E6E89BC92A63732A000A926E /* ScratchcardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E89BC82A63732A000A926E /* ScratchcardView.swift */; };
+		E6E89BCB2A637C9A000A926E /* ScratchcardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E89BCA2A637C9A000A926E /* ScratchcardViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		E6E89BBD2A637163000A926E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E6E89BBF2A637163000A926E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E6E89BC82A63732A000A926E /* ScratchcardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScratchcardView.swift; sourceTree = "<group>"; };
+		E6E89BCA2A637C9A000A926E /* ScratchcardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScratchcardViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +78,7 @@
 			children = (
 				E6E89BB22A637161000A926E /* ViewController.swift */,
 				E6E89BC82A63732A000A926E /* ScratchcardView.swift */,
+				E6E89BCA2A637C9A000A926E /* ScratchcardViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -171,6 +174,7 @@
 				E6E89BB32A637161000A926E /* ViewController.swift in Sources */,
 				E6E89BAF2A637161000A926E /* AppDelegate.swift in Sources */,
 				E6E89BC92A63732A000A926E /* ScratchcardView.swift in Sources */,
+				E6E89BCB2A637C9A000A926E /* ScratchcardViewController.swift in Sources */,
 				E6E89BB92A637161000A926E /* ScratchCard.xcdatamodeld in Sources */,
 				E6E89BB12A637161000A926E /* SceneDelegate.swift in Sources */,
 			);
