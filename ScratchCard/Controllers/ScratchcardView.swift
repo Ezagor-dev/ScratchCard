@@ -67,25 +67,26 @@ class ScratchcardView: UIView {
         if scratchedPoints.contains(point) {
             return
         }
-        
+
         scratchedPoints.insert(point)
-        let revealedPercentage = min(CGFloat(scratchedPoints.count) / totalArea, 1.0)
-        
+        let revealedArea = calculateRevealedArea()
+        let revealedPercentage = min(revealedArea / totalArea, 1.0)
+
         if revealedPercentage >= 0.8 {
-            let randomIndex = weightedRandomIndex(with: probabilities)
+            let randomIndex = Int.random(in: 0..<images.count)
             let image = images[randomIndex]
             let prize = prizes[randomIndex]
-            
+
             // Remove all existing subviews
             subviews.forEach { $0.removeFromSuperview() }
-            
+
             // Display the revealed image and award MetaBytes
             let imageView = UIImageView(frame: bounds)
             imageView.image = image
             addSubview(imageView)
-            
+
             awardMetaBytes(amount: prize)
-            
+
             // Show alert with winning amount
             let alertController = UIAlertController(title: "Congratulations!", message: "You have won \(prize) MetaBytes.", preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
@@ -93,9 +94,9 @@ class ScratchcardView: UIView {
                 rootViewController.present(alertController, animated: true, completion: nil)
             }
         }
-        
+
         // Print the revealed percentage
-        print("Revealed Percentage: \(revealedPercentage)")
+        print("Revealed Percentage: \(revealedPercentage * 100)%")
     }
 
     
@@ -105,11 +106,13 @@ class ScratchcardView: UIView {
     }
 
     
-    private func calculateRevealedPercentage(in rect: CGRect) -> CGFloat {
-        let scratchedArea = calculateScratchedArea(in: rect)
-        let revealedPercentage = scratchedArea / totalArea
-        
-        return min(revealedPercentage, 1.0)
+    private func calculateRevealedArea() -> CGFloat {
+        let path = UIBezierPath()
+        path.move(to: scratchedPoints.first ?? CGPoint.zero)
+        scratchedPoints.forEach { path.addLine(to: $0) }
+        path.close()
+
+        return path.bounds.size.width * path.bounds.size.height
     }
     
     private func showImage(_ image: UIImage) {

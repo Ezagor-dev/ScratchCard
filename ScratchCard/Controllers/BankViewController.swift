@@ -9,29 +9,31 @@ import Foundation
 import UIKit
 
 class BankViewController: UIViewController {
-    private let bankView = BankView()
+    private let metabytesLabel = UILabel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        updateMetabyteCount()
+        updateMetabytes()
     }
     
     private func setupUI() {
-        view.addSubview(bankView)
-        // Add constraints or set frame for the bankView
+        view.backgroundColor = .white
+        
+        // Configure the metabytes label
+        metabytesLabel.textAlignment = .center
+        metabytesLabel.font = UIFont.systemFont(ofSize: 24)
+        metabytesLabel.text = "Total MetaBytes: 0"
+        view.addSubview(metabytesLabel)
+        // Add constraints or set frame for the metabytesLabel
         
         // Configure navigation bar
         title = "Bank"
     }
     
-    private func updateMetabyteCount() {
-        // Fetch the total metabyte count from data source
-        let totalMetabytes = DataManager.shared.getTotalMetabyteCount()
-        bankView.setMetabyteCount(totalMetabytes)
+    private func updateMetabytes() {
+        let totalMetabytes = DataManager.shared.getTotalMetabytes()
+        metabytesLabel.text = "Total MetaBytes: \(totalMetabytes)"
     }
+
 }

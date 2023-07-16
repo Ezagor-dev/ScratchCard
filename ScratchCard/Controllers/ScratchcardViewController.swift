@@ -20,4 +20,8 @@ class ScratchcardViewController: UIViewController {
         scratchcardView = ScratchcardView(frame: view.bounds)
         view.addSubview(scratchcardView)
     }
+    @objc private func openBank() {
+           let bankViewController = BankViewController()
+           navigationController?.pushViewController(bankViewController, animated: true)
+       }
 }

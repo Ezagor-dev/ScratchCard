@@ -50,7 +50,6 @@
 		E6E89BA22A637161000A926E = {
 			isa = PBXGroup;
 			children = (
-				E6E89BCE2A637CE1000A926E /* Data Models */,
 				E6E89BAD2A637161000A926E /* ScratchCard */,
 				E6E89BAC2A637161000A926E /* Products */,
 			);
@@ -70,6 +69,7 @@
 				E6E89BAE2A637161000A926E /* AppDelegate.swift */,
 				E6E89BB02A637161000A926E /* SceneDelegate.swift */,
 				E6E89BC52A6371F6000A926E /* Controllers */,
+				E6E89BCE2A637CE1000A926E /* Data Models */,
 				E6E89BC62A6371FD000A926E /* Views */,
 				E6E89BC72A637207000A926E /* Supporting Files */,
 				E6E89BBF2A637163000A926E /* Info.plist */,
