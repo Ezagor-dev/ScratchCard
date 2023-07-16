@@ -47,7 +47,7 @@ class ScratchcardView: UIView {
         switch recognizer.state {
         case .began:
             isScratching = true
-            scratchedPoints.removeAll()
+            
         case .changed:
             if isScratching {
                 let point = recognizer.location(in: self)
@@ -73,7 +73,7 @@ class ScratchcardView: UIView {
         let revealedPercentage = min(revealedArea / totalArea, 1.0)
 
         if revealedPercentage >= 0.8 {
-            let randomIndex = Int.random(in: 0..<images.count)
+            let randomIndex = weightedRandomIndex(with: probabilities)
             let image = images[randomIndex]
             let prize = prizes[randomIndex]
 
