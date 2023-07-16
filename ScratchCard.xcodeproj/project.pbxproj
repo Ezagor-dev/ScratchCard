@@ -17,6 +17,7 @@
 		E6E89BC92A63732A000A926E /* ScratchcardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E89BC82A63732A000A926E /* ScratchcardView.swift */; };
 		E6E89BCB2A637C9A000A926E /* ScratchcardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E89BCA2A637C9A000A926E /* ScratchcardViewController.swift */; };
 		E6E89BCD2A637CC0000A926E /* BankViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E89BCC2A637CC0000A926E /* BankViewController.swift */; };
+		E6E89BD02A637CF6000A926E /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E89BCF2A637CF6000A926E /* DataManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		E6E89BC82A63732A000A926E /* ScratchcardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScratchcardView.swift; sourceTree = "<group>"; };
 		E6E89BCA2A637C9A000A926E /* ScratchcardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScratchcardViewController.swift; sourceTree = "<group>"; };
 		E6E89BCC2A637CC0000A926E /* BankViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankViewController.swift; sourceTree = "<group>"; };
+		E6E89BCF2A637CF6000A926E /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,6 +50,7 @@
 		E6E89BA22A637161000A926E = {
 			isa = PBXGroup;
 			children = (
+				E6E89BCE2A637CE1000A926E /* Data Models */,
 				E6E89BAD2A637161000A926E /* ScratchCard */,
 				E6E89BAC2A637161000A926E /* Products */,
 			);
@@ -101,6 +104,14 @@
 				E6E89BBC2A637163000A926E /* LaunchScreen.storyboard */,
 			);
 			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		E6E89BCE2A637CE1000A926E /* Data Models */ = {
+			isa = PBXGroup;
+			children = (
+				E6E89BCF2A637CF6000A926E /* DataManager.swift */,
+			);
+			path = "Data Models";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -175,6 +186,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E6E89BCD2A637CC0000A926E /* BankViewController.swift in Sources */,
+				E6E89BD02A637CF6000A926E /* DataManager.swift in Sources */,
 				E6E89BB32A637161000A926E /* ViewController.swift in Sources */,
 				E6E89BAF2A637161000A926E /* AppDelegate.swift in Sources */,
 				E6E89BC92A63732A000A926E /* ScratchcardView.swift in Sources */,
