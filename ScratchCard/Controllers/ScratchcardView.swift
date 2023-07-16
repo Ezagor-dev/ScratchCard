@@ -98,6 +98,15 @@ class ScratchcardView: UIView {
             
             let alertController = UIAlertController(title: "Congratulations!", message: alertMessage, preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            if prize > 0 {
+                        alertController.addAction(UIAlertAction(title: "Play Again", style: .default, handler: { _ in
+                            self.resetScratchcard()
+                        }))
+            }else{
+                alertController.addAction(UIAlertAction(title: "Try Again", style: .default, handler: { _ in
+                    self.resetScratchcard()
+                }))
+            }
             if let rootViewController = UIApplication.shared.windows.first?.rootViewController {
                 rootViewController.present(alertController, animated: true, completion: nil)
             }
@@ -108,7 +117,10 @@ class ScratchcardView: UIView {
     }
 
 
-
+    private func resetScratchcard() {
+        scratchedPoints.removeAll()
+        subviews.forEach { $0.removeFromSuperview() }
+    }
     
     private func calculateScratchedArea(in rect: CGRect) -> CGFloat {
         let intersectionRect = rect.intersection(bounds)
