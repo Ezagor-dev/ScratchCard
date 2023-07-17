@@ -21,4 +21,3 @@ class DataManager {
         return totalMetabytes
     }
 }
-
