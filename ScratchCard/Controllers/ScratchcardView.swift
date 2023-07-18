@@ -9,7 +9,7 @@ class ScratchcardView: UIView {
         UIImage(named: "prize_1000")!,
         UIImage(named: "no_prize")!
     ]
-    
+    private var playAgainHandler: (() -> Void)?
     private let prizes: [Int] = [10000, 5000, 2000, 1000, 0]
     private let probabilities: [Int] = [
         2, 3, 5, 50, 40
@@ -28,14 +28,24 @@ class ScratchcardView: UIView {
     }
     
     private func setupUI() {
+        // Set background image
+        let backgroundImage = UIImage(named: "background_image")
+        let backgroundImageView = UIImageView(image: backgroundImage)
+        backgroundImageView.contentMode = .scaleAspectFill
+        backgroundImageView.frame = superview?.bounds ?? bounds
+        addSubview(backgroundImageView)
+        
         isUserInteractionEnabled = true
-        backgroundColor = .white
         layer.borderWidth = 2.0
         layer.borderColor = UIColor.black.cgColor
         
         let scratchGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handleScratch(_:)))
         addGestureRecognizer(scratchGestureRecognizer)
     }
+
+
+
+    
     
     private var isScratching = false
     private var scratchedPoints = Set<CGPoint>()
@@ -90,13 +100,16 @@ class ScratchcardView: UIView {
 
             // Show alert with winning amount
             let alertMessage: String
+            let titleMessage: String
             if prize == 0 {
                 alertMessage = "Better luck next time!"
+                titleMessage = "Don't be sorry!"
             } else {
+                titleMessage = "Congratulations!"
                 alertMessage = "You have won \(prize) MetaBytes."
             }
             
-            let alertController = UIAlertController(title: "Congratulations!", message: alertMessage, preferredStyle: .alert)
+            let alertController = UIAlertController(title: titleMessage, message: alertMessage, preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             if prize > 0 {
                         alertController.addAction(UIAlertAction(title: "Play Again", style: .default, handler: { _ in
@@ -115,12 +128,26 @@ class ScratchcardView: UIView {
         // Print the revealed percentage
         print("Revealed Percentage: \(revealedPercentage * 100)%")
     }
-
+    func reset() {
+            scratchedPoints.removeAll()
+            subviews.forEach { $0.removeFromSuperview() }
+        }
 
     private func resetScratchcard() {
         scratchedPoints.removeAll()
         subviews.forEach { $0.removeFromSuperview() }
+        
+        let backgroundImage = UIImage(named: "background_image")
+        let backgroundImageView = UIImageView(image: backgroundImage)
+        backgroundImageView.contentMode = .scaleAspectFill
+        backgroundImageView.frame = bounds
+        addSubview(backgroundImageView)
+        sendSubviewToBack(backgroundImageView)
     }
+
+    func onPlayAgain(_ handler: @escaping () -> Void) {
+            playAgainHandler = handler
+        }
     
     private func calculateScratchedArea(in rect: CGRect) -> CGFloat {
         let intersectionRect = rect.intersection(bounds)
@@ -161,6 +188,8 @@ class ScratchcardView: UIView {
         
         return 0
     }
+    
+    
 }
 extension CGPoint: Hashable {
     public func hash(into hasher: inout Hasher) {

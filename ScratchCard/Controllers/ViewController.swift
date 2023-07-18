@@ -19,9 +19,16 @@ class ViewController: UIViewController {
     }
     func setupScratchcardView() {
         let scratchcardView = ScratchcardView(frame: view.bounds)
-        scratchcardView.backgroundColor = .lightGray
+        let backgroundImage = UIImage(named: "background_image")
+        let backgroundImageView = UIImageView(image: backgroundImage)
+        backgroundImageView.contentMode = .scaleToFill
+        backgroundImageView.frame = scratchcardView.bounds
+        scratchcardView.addSubview(backgroundImageView)
+        scratchcardView.sendSubviewToBack(backgroundImageView)
         view.addSubview(scratchcardView)
     }
+
+
 
 
 }

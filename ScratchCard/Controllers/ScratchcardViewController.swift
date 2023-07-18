@@ -10,6 +10,7 @@ import UIKit
 
 class ScratchcardViewController: UIViewController {
     private var scratchcardView: ScratchcardView!
+    private var backgroundImage: UIImage?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -17,11 +18,27 @@ class ScratchcardViewController: UIViewController {
     }
     
     private func setupUI() {
-        scratchcardView = ScratchcardView(frame: view.bounds)
-        view.addSubview(scratchcardView)
-    }
+            scratchcardView = ScratchcardView(frame: view.bounds)
+            // ...
+            scratchcardView.onPlayAgain { [weak self] in
+                self?.resetScratchcard()
+            }
+            view.addSubview(scratchcardView)
+        }
+    
+    
     @objc private func openBank() {
            let bankViewController = BankViewController()
            navigationController?.pushViewController(bankViewController, animated: true)
        }
+    
+    
+    
+    @objc private func resetScratchcard() {
+        scratchcardView.reset()
+        scratchcardView.backgroundColor = UIColor(patternImage: backgroundImage!)
+    }
+
+
+
 }
