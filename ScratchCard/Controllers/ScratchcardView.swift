@@ -67,7 +67,7 @@ class ScratchcardView: UIView {
             scratchedPoints.removeAll()
             
         case .changed:
-            
+            if isScratching {
                 let point = recognizer.location(in: self)
                 let convertedPoint = convert(point, to: self)
                 scratchedPoints.insert(convertedPoint)
@@ -75,7 +75,7 @@ class ScratchcardView: UIView {
                 
                 // Update the foreground image's alpha based on the revealed percentage
                 if let foregroundImageView = foregroundImageView {
-                    foregroundImageView.alpha = 1.0 - revealedPercentage*100
+                    foregroundImageView.alpha = 1.0 - revealedPercentage
                 }
                 
                 // Print the revealed percentage
@@ -87,15 +87,18 @@ class ScratchcardView: UIView {
                     // Call revealImage to display the final result
                     revealImage()
                 }
-            
+            }
             
         case .ended, .cancelled:
             isScratching = false
+            // Reset the foreground image's alpha
+            foregroundImageView?.alpha = 1.0
             
         default:
             break
         }
     }
+
 
 
 
@@ -188,11 +191,11 @@ class ScratchcardView: UIView {
             alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             if prize > 0 {
                 alertController.addAction(UIAlertAction(title: "Play Again", style: .default, handler: { _ in
-                    self.resetScratchcard()
+                    self.reset()
                 }))
             } else {
                 alertController.addAction(UIAlertAction(title: "Try Again", style: .default, handler: { _ in
-                    self.resetScratchcard()
+                    self.reset()
                 }))
             }
             
@@ -212,6 +215,10 @@ class ScratchcardView: UIView {
     
     func reset() {
         resetScratchcard()
+        isUserInteractionEnabled = true
+        if let scratchGestureRecognizer = gestureRecognizers?.first as? UIPanGestureRecognizer {
+            scratchGestureRecognizer.isEnabled = true
+        }
     }
     
     
