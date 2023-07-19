@@ -18,27 +18,23 @@ class ScratchcardViewController: UIViewController {
     }
     
     private func setupUI() {
-            scratchcardView = ScratchcardView(frame: view.bounds)
-            // ...
-            scratchcardView.onPlayAgain { [weak self] in
-                self?.resetScratchcard()
-            }
-            view.addSubview(scratchcardView)
+        scratchcardView = ScratchcardView(frame: view.bounds)
+        // ...
+        scratchcardView.onPlayAgain = { [weak self] in
+            self?.resetScratchcard()
         }
-    
+        view.addSubview(scratchcardView)
+    }
     
     @objc private func openBank() {
-           let bankViewController = BankViewController()
-           navigationController?.pushViewController(bankViewController, animated: true)
-       }
-    
-    
+        let bankViewController = BankViewController()
+        navigationController?.pushViewController(bankViewController, animated: true)
+    }
     
     @objc private func resetScratchcard() {
         scratchcardView.reset()
         scratchcardView.backgroundColor = UIColor(patternImage: backgroundImage!)
     }
-
-
-
 }
+
+

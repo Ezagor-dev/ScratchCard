@@ -19,7 +19,7 @@ class ViewController: UIViewController {
     }
     func setupScratchcardView() {
         let scratchcardView = ScratchcardView(frame: view.bounds)
-        let backgroundImage = UIImage(named: "background_image")
+        let backgroundImage = UIImage(named: "hexagram")
         let backgroundImageView = UIImageView(image: backgroundImage)
         backgroundImageView.contentMode = .scaleToFill
         backgroundImageView.frame = scratchcardView.bounds

@@ -16,6 +16,9 @@ class ScratchcardView: UIView {
     ]
     private let scratchWidth: CGFloat = 30.0
     private var revealedPercentage: CGFloat = 0.0
+    private var backgroundImage: UIImageView!
+    private var foregroundImageView: UIImageView!
+    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -26,78 +29,156 @@ class ScratchcardView: UIView {
         super.init(coder: aDecoder)
         setupUI()
     }
-    
+//    print("background randomIndex prize image: \(randomIndex)")
+//    print("background imageIndex prize image: \(imageIndex)")
     private func setupUI() {
-        // Set background image
-        let backgroundImage = UIImage(named: "background_image")
-        let backgroundImageView = UIImageView(image: backgroundImage)
-        backgroundImageView.contentMode = .scaleAspectFill
-        backgroundImageView.frame = superview?.bounds ?? bounds
-        addSubview(backgroundImageView)
-        
         isUserInteractionEnabled = true
-        layer.borderWidth = 2.0
-        layer.borderColor = UIColor.black.cgColor
+        
+        // Find the index of the desired prize image
+        let prizeIndex = prizes.firstIndex(where: { $0 == 5000 || $0 == 2000 || $0 == 1000 || $0 == 0 }) ?? (prizes.count - 1)
+        print("setupUI prizeIndex: \(prizeIndex)")
+        // Add background image (prize image)
+        let backgroundImage = UIImageView(image: images[prizeIndex])
+        backgroundImage.contentMode = .scaleAspectFill
+        backgroundImage.frame = bounds
+        addSubview(backgroundImage)
+        
+        // Add foreground image (hexagram)
+        let foregroundImageView = UIImageView(image: UIImage(named: "hexagram"))
+        foregroundImageView.contentMode = .scaleAspectFill
+        foregroundImageView.frame = bounds
+        addSubview(foregroundImageView)
         
         let scratchGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handleScratch(_:)))
         addGestureRecognizer(scratchGestureRecognizer)
     }
 
-
-
-    
     
     private var isScratching = false
     private var scratchedPoints = Set<CGPoint>()
     private var totalArea: CGFloat {
         return bounds.width * bounds.height
     }
-
+    
     @objc private func handleScratch(_ recognizer: UIPanGestureRecognizer) {
         switch recognizer.state {
         case .began:
-            isScratching = true
+            // Start scratching
+            isUserInteractionEnabled = true
+            revealedPercentage = 0.0
+            scratchedPoints.removeAll()
             
         case .changed:
-            if isScratching {
-                let point = recognizer.location(in: self)
-                let convertedPoint = convert(point, to: self)
-                revealImage(at: convertedPoint)
+            let point = recognizer.location(in: self)
+            let convertedPoint = convert(point, to: self)
+            
+            // Update the scratched points and calculate the revealed percentage
+            scratchedPoints.insert(convertedPoint)
+            revealedPercentage = calculateRevealedPercentage()
+            
+            // Update the foreground image's alpha based on the revealed percentage
+            if let foregroundImageView = foregroundImageView {
+                foregroundImageView.alpha = 1.0 - revealedPercentage
             }
+            
+            // Print the revealed percentage
+            print("Revealed Percentage: \(revealedPercentage * 100)%")
+            
+            // Check if the revealed percentage exceeds 80%
+            if revealedPercentage >= 0.8 {
+                recognizer.isEnabled = false
+                // Call revealImage to display the final result
+                revealImage()
+            }
+            
         case .ended, .cancelled:
-            isScratching = false
+            if let foregroundImageView = foregroundImageView {
+                foregroundImageView.alpha = 1.0 - revealedPercentage
+            }
+            
         default:
             break
         }
     }
 
-    
-    
-    private func revealImage(at point: CGPoint) {
-        if scratchedPoints.contains(point) {
-            return
-        }
-        
-        scratchedPoints.insert(point)
-        let revealedArea = calculateRevealedArea()
-        let revealedPercentage = min(revealedArea / totalArea, 1.0)
 
+
+//    private func resetScratchcard() {
+//        // Remove the revealed image
+//        subviews.forEach { $0.removeFromSuperview() }
+//
+//        // Reset the background and foreground images
+//        addSubview(backgroundImage)
+//        addSubview(foregroundImageView)
+//        foregroundImageView.alpha = 1.0
+//
+//        // Reset the scratched points and revealed percentage
+//        scratchedPoints.removeAll()
+//        revealedPercentage = 0.0
+//    }
+    private func resetScratchcard() {
+        // Remove the revealed image and foreground image
+        subviews.forEach { $0.removeFromSuperview() }
+        
+        // Add the background image (prize image)
+        let prizeIndex = prizes.firstIndex(where: { $0 == 5000 || $0 == 2000 || $0 == 1000 || $0 == 0 }) ?? (prizes.count - 1)
+        let image = images[prizeIndex]
+        backgroundImage = UIImageView(image: image)
+        backgroundImage.contentMode = .scaleAspectFill
+        backgroundImage.frame = bounds
+        addSubview(backgroundImage)
+        
+        // Add the foreground image (hexagram)
+        foregroundImageView = UIImageView(image: UIImage(named: "hexagram"))
+        foregroundImageView.contentMode = .scaleAspectFill
+        foregroundImageView.frame = bounds
+        addSubview(foregroundImageView)
+        
+        // Reset the scratched points and revealed percentage
+        scratchedPoints.removeAll()
+        revealedPercentage = 0.0
+    }
+
+    
+    private func calculateRevealedPercentage() -> CGFloat {
+        let totalArea = bounds.width * bounds.height
+        let revealedArea = calculateRevealedArea()
+        return min(revealedArea / totalArea, 1.0)
+    }
+    
+    private func calculateRevealedArea() -> CGFloat {
+        let path = UIBezierPath()
+        path.move(to: scratchedPoints.first ?? CGPoint.zero)
+        scratchedPoints.forEach { path.addLine(to: $0) }
+        path.close()
+        
+        return path.bounds.size.width * path.bounds.size.height
+    }
+    
+    
+    
+    private func revealImage() {
+        let revealedPercentage = calculateRevealedPercentage()
+        
         if revealedPercentage >= 0.8 {
             let randomIndex = weightedRandomIndex(with: probabilities)
             let imageIndex = prizes[randomIndex] == 0 ? images.count - 1 : randomIndex
             let image = images[imageIndex]
             let prize = prizes[randomIndex]
-
-            // Remove all existing subviews
-            subviews.forEach { $0.removeFromSuperview() }
-
-            // Display the revealed image and award MetaBytes
-            let imageView = UIImageView(frame: bounds)
-            imageView.image = image
-            addSubview(imageView)
-
+            
+            // Remove the foreground image if it exists
+            foregroundImageView?.removeFromSuperview()
+            
+            // Create a new image view for the revealed image (prize image)
+            let revealedImageView = UIImageView(frame: bounds)
+            revealedImageView.image = image
+            addSubview(revealedImageView)
+            
+            // Set the alpha value of the revealed image
+            revealedImageView.alpha = 1.0
+            
             awardMetaBytes(amount: prize)
-
+            
             // Show alert with winning amount
             let alertMessage: String
             let titleMessage: String
@@ -112,57 +193,35 @@ class ScratchcardView: UIView {
             let alertController = UIAlertController(title: titleMessage, message: alertMessage, preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             if prize > 0 {
-                        alertController.addAction(UIAlertAction(title: "Play Again", style: .default, handler: { _ in
-                            self.resetScratchcard()
-                        }))
-            }else{
+                alertController.addAction(UIAlertAction(title: "Play Again", style: .default, handler: { _ in
+                    self.resetScratchcard()
+                }))
+            } else {
                 alertController.addAction(UIAlertAction(title: "Try Again", style: .default, handler: { _ in
                     self.resetScratchcard()
                 }))
             }
+            
             if let rootViewController = UIApplication.shared.windows.first?.rootViewController {
                 rootViewController.present(alertController, animated: true, completion: nil)
             }
         }
-
+        
         // Print the revealed percentage
         print("Revealed Percentage: \(revealedPercentage * 100)%")
     }
-    func reset() {
-            scratchedPoints.removeAll()
-            subviews.forEach { $0.removeFromSuperview() }
-        }
 
-    private func resetScratchcard() {
+
+    
+    var onPlayAgain: (() -> Void)?
+    
+    
+    func reset() {
         scratchedPoints.removeAll()
         subviews.forEach { $0.removeFromSuperview() }
-        
-        let backgroundImage = UIImage(named: "background_image")
-        let backgroundImageView = UIImageView(image: backgroundImage)
-        backgroundImageView.contentMode = .scaleAspectFill
-        backgroundImageView.frame = bounds
-        addSubview(backgroundImageView)
-        sendSubviewToBack(backgroundImageView)
     }
-
-    func onPlayAgain(_ handler: @escaping () -> Void) {
-            playAgainHandler = handler
-        }
     
-    private func calculateScratchedArea(in rect: CGRect) -> CGFloat {
-        let intersectionRect = rect.intersection(bounds)
-        return intersectionRect.width * intersectionRect.height
-    }
-
     
-    private func calculateRevealedArea() -> CGFloat {
-        let path = UIBezierPath()
-        path.move(to: scratchedPoints.first ?? CGPoint.zero)
-        scratchedPoints.forEach { path.addLine(to: $0) }
-        path.close()
-
-        return path.bounds.size.width * path.bounds.size.height
-    }
     
     private func showImage(_ image: UIImage) {
         let imageView = UIImageView(frame: bounds)
