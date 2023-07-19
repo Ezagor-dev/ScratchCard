@@ -29,8 +29,7 @@ class ScratchcardView: UIView {
         super.init(coder: aDecoder)
         setupUI()
     }
-//    print("background randomIndex prize image: \(randomIndex)")
-//    print("background imageIndex prize image: \(imageIndex)")
+
     private func setupUI() {
         isUserInteractionEnabled = true
         
@@ -64,37 +63,34 @@ class ScratchcardView: UIView {
         switch recognizer.state {
         case .began:
             // Start scratching
-            isUserInteractionEnabled = true
-            revealedPercentage = 0.0
+            isScratching = true
             scratchedPoints.removeAll()
             
         case .changed:
-            let point = recognizer.location(in: self)
-            let convertedPoint = convert(point, to: self)
             
-            // Update the scratched points and calculate the revealed percentage
-            scratchedPoints.insert(convertedPoint)
-            revealedPercentage = calculateRevealedPercentage()
+                let point = recognizer.location(in: self)
+                let convertedPoint = convert(point, to: self)
+                scratchedPoints.insert(convertedPoint)
+                revealedPercentage = calculateRevealedPercentage()
+                
+                // Update the foreground image's alpha based on the revealed percentage
+                if let foregroundImageView = foregroundImageView {
+                    foregroundImageView.alpha = 1.0 - revealedPercentage*100
+                }
+                
+                // Print the revealed percentage
+                print("Revealed Percentage: \(revealedPercentage * 100)%")
+                
+                // Check if the revealed percentage exceeds 80%
+                if revealedPercentage >= 0.8 {
+                    recognizer.isEnabled = false
+                    // Call revealImage to display the final result
+                    revealImage()
+                }
             
-            // Update the foreground image's alpha based on the revealed percentage
-            if let foregroundImageView = foregroundImageView {
-                foregroundImageView.alpha = 1.0 - revealedPercentage
-            }
-            
-            // Print the revealed percentage
-            print("Revealed Percentage: \(revealedPercentage * 100)%")
-            
-            // Check if the revealed percentage exceeds 80%
-            if revealedPercentage >= 0.8 {
-                recognizer.isEnabled = false
-                // Call revealImage to display the final result
-                revealImage()
-            }
             
         case .ended, .cancelled:
-            if let foregroundImageView = foregroundImageView {
-                foregroundImageView.alpha = 1.0 - revealedPercentage
-            }
+            isScratching = false
             
         default:
             break
@@ -103,19 +99,7 @@ class ScratchcardView: UIView {
 
 
 
-//    private func resetScratchcard() {
-//        // Remove the revealed image
-//        subviews.forEach { $0.removeFromSuperview() }
-//
-//        // Reset the background and foreground images
-//        addSubview(backgroundImage)
-//        addSubview(foregroundImageView)
-//        foregroundImageView.alpha = 1.0
-//
-//        // Reset the scratched points and revealed percentage
-//        scratchedPoints.removeAll()
-//        revealedPercentage = 0.0
-//    }
+
     private func resetScratchcard() {
         // Remove the revealed image and foreground image
         subviews.forEach { $0.removeFromSuperview() }
@@ -141,26 +125,36 @@ class ScratchcardView: UIView {
 
     
     private func calculateRevealedPercentage() -> CGFloat {
-        let totalArea = bounds.width * bounds.height
         let revealedArea = calculateRevealedArea()
         return min(revealedArea / totalArea, 1.0)
     }
-    
+
     private func calculateRevealedArea() -> CGFloat {
-        let path = UIBezierPath()
-        path.move(to: scratchedPoints.first ?? CGPoint.zero)
-        scratchedPoints.forEach { path.addLine(to: $0) }
-        path.close()
+        var minX = CGFloat.greatestFiniteMagnitude
+        var minY = CGFloat.greatestFiniteMagnitude
+        var maxX = CGFloat.leastNormalMagnitude
+        var maxY = CGFloat.leastNormalMagnitude
         
-        return path.bounds.size.width * path.bounds.size.height
+        for point in scratchedPoints {
+            minX = min(minX, point.x)
+            minY = min(minY, point.y)
+            maxX = max(maxX, point.x)
+            maxY = max(maxY, point.y)
+        }
+        
+        let width = maxX - minX
+        let height = maxY - minY
+        
+        return width * height
     }
+
     
     
     
     private func revealImage() {
         let revealedPercentage = calculateRevealedPercentage()
         
-        if revealedPercentage >= 0.8 {
+        if revealedPercentage >= 0.008 {
             let randomIndex = weightedRandomIndex(with: probabilities)
             let imageIndex = prizes[randomIndex] == 0 ? images.count - 1 : randomIndex
             let image = images[imageIndex]
@@ -217,8 +211,7 @@ class ScratchcardView: UIView {
     
     
     func reset() {
-        scratchedPoints.removeAll()
-        subviews.forEach { $0.removeFromSuperview() }
+        resetScratchcard()
     }
     
     

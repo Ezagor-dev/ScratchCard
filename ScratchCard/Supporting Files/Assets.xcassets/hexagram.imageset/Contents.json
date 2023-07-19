@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "hexagram.png",
+      "filename" : "hexagram2.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "hexagram 1.png",
+      "filename" : "hexagram2 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "hexagram 2.png",
+      "filename" : "hexagram2 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

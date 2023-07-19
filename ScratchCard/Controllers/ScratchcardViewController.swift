@@ -36,5 +36,3 @@ class ScratchcardViewController: UIViewController {
         scratchcardView.backgroundColor = UIColor(patternImage: backgroundImage!)
     }
 }
-
-
